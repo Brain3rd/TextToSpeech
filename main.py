@@ -19,7 +19,6 @@ class PDFText:
         self.read_this = []
         self.filepath = None
 
-        # Window
         window = Tk()
         window.geometry("700x800")
 
@@ -50,15 +49,18 @@ class PDFText:
 
     def read_words(self, from_pages, to_pages):
 
+        # Open pdf
         pdf = PyPDF2.PdfFileReader(self.filepath)
         # pages = pdf.numPages
 
+        # Add pages to the list to read
         for page in range(from_pages - 1, to_pages - 1):
             one_page = pdf.getPage(page)
             page_list = one_page.extractText()
             self.pdf_text.append(page_list)
 
-        with open('test.txt', 'w') as file:
+        # Save pages to txt file
+        with open('text.txt', 'w') as file:
             file.write(''.join(self.pdf_text))
 
         # Setting up new voice rate
@@ -70,19 +72,21 @@ class PDFText:
         # Changing index, changes voices. o for male
         voices = self.reader.getProperty('voices')
         male = voices[0].id
-        female = voices[1].id
+        # female = voices[1].id
         self.reader.setProperty('voice', male)
 
         # # Save
         # self.reader.save_to_file(read_this, 'test.mp3')
 
-        with open('test.txt') as file:
+        # Open txt and get rid of some not needed characters
+        with open('text.txt') as file:
             read_text = file.readlines()
             for word in read_text:
                 if word == ' \n':
                     word = ' '
                 if word != '\n':
                     self.read_this.append(word)
+            # Read this
             self.reader.say(''.join(self.read_this))
             self.reader.runAndWait()
 
